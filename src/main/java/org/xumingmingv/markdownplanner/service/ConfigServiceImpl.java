@@ -60,7 +60,8 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     private static String getUserHome() {
-        return System.getProperties().getProperty("user.home");
+        String usrHome = System.getProperties().getProperty("user.home");
+        return usrHome;
     }
 
     public static void main(String[] args) {

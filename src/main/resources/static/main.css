@@ -1,6 +1,6 @@
 .layout-middle {
     height: 50vh;
-    margin-top:15vh;
+    margin-top: 15vh;
 }
 
 .glyphicon {
@@ -55,4 +55,13 @@ table {
 #example-advanced .selected {
     background-color: #3875d7;
     color: #fff;
+}
+
+.modal-dialog .dd-task-name {
+    color: red;
+}
+
+.modal-dialog .modal-header .modal-title {
+    width: 90%;
+    display: inline-block;
 }

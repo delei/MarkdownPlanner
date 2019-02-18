@@ -7,10 +7,11 @@
 
     <link rel="stylesheet" href="/jquery-ui/jquery-ui.min.css" />
     <link rel="stylesheet" href="/bootstrap.min.css" />
-    <link rel="stylesheet" href="/bootstrap-theme.min.css" />
 
     <link rel="stylesheet" href="/jquery-treetable/css/jquery.treetable.css" />
     <link rel="stylesheet" href="/jquery-treetable/css/jquery.treetable.theme.default.css" />
+
+    <link rel="stylesheet" href="/bootstrap-select/css/bootstrap-select.min.css" />
 
     <link rel="stylesheet" href="/main.css" />
 </head>
@@ -30,7 +31,7 @@
             <form method="GET">
                 <div class="filter-container" style="float:left; margin-right: 5px">
                     责任人:
-                    <select id="filterByMan" name="man">
+                    <select id="filterByMan" name="man" class="bs-select">
                         <option value="">所有人</option>
                         <div th:each="man : ${fullProject.men}">
                             <div th:if="${man == selectedMan}">
@@ -45,7 +46,7 @@
 
                 <div style="float:left; margin-right: 5px">
                     显示任务类型:
-                    <select id="filterByTaskStatus" name="status">
+                    <select id="filterByTaskStatus" name="status" class="bs-select">
                         <div th:if="${'All' == selectedStatus}">
                             <option selected="selected" value="All">所有</option>
                         </div>
@@ -76,12 +77,12 @@
                     不包含指定的关键词: <input type="checkbox" name="reverse" th:checked="${selectedReverse}" />
                 </div>
                 <div>
-                    <input type="submit" value="GO" />
+                    <input type="submit" class="btn btn-xs btn-primary" value="GO" />
                 </div>
             </form>
         </div>
 
-        <div id="tabs">
+        <div id="tabs" style="margin-top:20px">
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active">
@@ -212,7 +213,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">更新 “<span id="taskName"></span>” 进度</h5>
+                    <h5 class="modal-title">更新[<span id="taskName" class="dd-task-name"></span>]进度</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -245,6 +246,8 @@
     <script src="/jquery-ui/jquery-ui.min.js"></script>
     <script src="/jquery-treetable/jquery.treetable.js"></script>
     <script src="/bootstrap.min.js"></script>
+    <script src="/bootstrap-select/js/bootstrap-select.js"></script>
+
     <script src="/Chart.bundle.js" />
     <script src="/tasks.js"></script>
     <script src="/stat.js"></script>

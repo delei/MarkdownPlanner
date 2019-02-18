@@ -28,4 +28,6 @@ public class TaskVO {
     private String bgColorClass;
     /** 行号 */
     private int lineNumber;
+    /** 任务说明 */
+    private String content;
 }

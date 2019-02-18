@@ -18,7 +18,13 @@ $(document).ready(function() {
     });
 
     $('#example-advanced').treetable('expandAll');
-})
+
+    jQuery(".bs-select").selectpicker({
+        iconBase: 'fa',
+        tickIcon: 'fa-check'
+    });
+    jQuery(".bs-select").selectpicker('refresh');
+});
 
 
 $('.btn-number').click(function(e){
@@ -61,7 +67,7 @@ $('.input-number').change(function() {
     maxValue =  parseInt($(this).attr('max'));
     valueCurrent = parseInt($(this).val());
 
-    name = $(this).attr('name');
+    var name = $(this).attr('name');
     if(valueCurrent >= minValue) {
         $(".btn-number[data-type='minus'][data-field='"+name+"']").removeAttr('disabled')
     } else {
@@ -97,8 +103,6 @@ function showUpdateTaskProgressModal(element, e) {
     var oldProgress = $(element).attr('data-progress');
     var lineNumber = $(element).attr('data-lineNumber');
 
-    console.log(element);
-    console.log(e);
     $("#taskName").text(name);
     $("#oldProgress").val(oldProgress);
     $("#newProgress").val(oldProgress);
