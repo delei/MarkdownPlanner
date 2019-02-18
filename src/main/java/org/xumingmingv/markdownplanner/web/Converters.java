@@ -15,7 +15,7 @@ public class Converters {
         taskVO.setParentId(task.getParentId());
         taskVO.setName(task.getName());
         taskVO.setOwner(task.getOwner());
-        taskVO.setComposite(false);
+        taskVO.setBooleanComposite(false);
         taskVO.setStartDate(task.getStartDate().toString());
         taskVO.setEndDate(task.getEndDate().toString());
 
@@ -42,7 +42,7 @@ public class Converters {
             }
         }
         taskVO.setBgColorClass(bgColorClass);
-        taskVO.setComposite(task.isComposite());
+        taskVO.setBooleanComposite(task.isComposite());
         if (!task.isComposite()) {
             taskVO.setLineNumber(((AtomicTask)task).getLineNumber());
         }

@@ -6,9 +6,9 @@ import lombok.Value;
 public class FileVO {
     private String name;
     private String url;
-    private boolean isDir;
+    private boolean booeanDir;
 
     public String getUrl() {
-        return isDir ? "/tree" + url  : url;
+        return booeanDir ? "/tree" + url  : url;
     }
 }

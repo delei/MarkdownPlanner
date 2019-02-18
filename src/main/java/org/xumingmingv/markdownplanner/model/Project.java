@@ -55,6 +55,7 @@ public class Project implements IProject {
         this(projectStartDate, tasks, ImmutableList.of());
     }
 
+    @Override
     public List<String> getMen() {
         return tasks.stream()
             .filter(task -> !task.isComposite())
@@ -405,6 +406,7 @@ public class Project implements IProject {
         );
     }
 
+    @Override
     public IProject filterKeywords(List<String> keywords, boolean reverse) {
         return new Project(
             name,
@@ -430,6 +432,7 @@ public class Project implements IProject {
         );
     }
 
+    @Override
     public IProject filterKeyword(String keyword, boolean reverse) {
         return new Project(
             name,

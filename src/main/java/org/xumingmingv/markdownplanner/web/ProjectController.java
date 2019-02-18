@@ -62,9 +62,9 @@ public class ProjectController {
                 )
             )
             .sorted((x, y) -> {
-                if (x.isDir() && !y.isDir()) {
+                if (x.isBooeanDir() && !y.isBooeanDir()) {
                     return -1;
-                } else if (!x.isDir() && y.isDir()){
+                } else if (!x.isBooeanDir() && y.isBooeanDir()){
                     return 1;
                 } else {
                     return y.getName().compareTo(x.getName());
@@ -146,7 +146,7 @@ public class ProjectController {
     }
 
     private String renderMarkdown(String filePath) throws IOException {
-        final MutableDataHolder OPTIONS = new MutableDataSet()
+        final MutableDataHolder options = new MutableDataSet()
             .set(HtmlRenderer.INDENT_SIZE, 2)
             .set(HtmlRenderer.PERCENT_ENCODE_URLS, true)
             .set(
@@ -155,12 +155,12 @@ public class ProjectController {
             )
             ;
         com.vladsch.flexmark.parser.Parser parser =
-            com.vladsch.flexmark.parser.Parser.builder(OPTIONS).build();
+            com.vladsch.flexmark.parser.Parser.builder(options).build();
         Node document = parser.parse(
             FileUtils.readLines(new File(filePath), "UTF-8")
             .stream().collect(Collectors.joining("\n"))
         );
-        HtmlRenderer renderer = HtmlRenderer.builder(OPTIONS).build();
+        HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         return renderer.render(document);
     }
 }

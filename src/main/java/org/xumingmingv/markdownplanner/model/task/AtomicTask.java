@@ -48,6 +48,7 @@ public class AtomicTask extends AbstractTask implements Task {
         this.endOffset = endOffset;
     }
 
+    @Override
     public boolean isComposite() {
         return false;
     }
