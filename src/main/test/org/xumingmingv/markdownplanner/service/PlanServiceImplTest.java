@@ -3,9 +3,9 @@ package org.xumingmingv.markdownplanner.service;
 import java.io.File;
 import java.util.List;
 
-import org.xumingmingv.markdownplanner.model.Project;
 import org.junit.Test;
 import org.xumingmingv.markdownplanner.Utils;
+import org.xumingmingv.markdownplanner.service.impl.PlanServiceImpl;
 
 import static org.junit.Assert.*;
 
@@ -68,22 +68,22 @@ public class PlanServiceImplTest {
 
     private PlanServiceImpl getPlanService() {
         PlanServiceImpl planService = new PlanServiceImpl();
-        planService.setProjectCacheService(new CacheService<Project>() {
-            @Override
-            public Project get(String key) {
-                return null;
-            }
-
-            @Override
-            public void set(String key, Project value) {
-
-            }
-
-            @Override
-            public long getLastModified(String key) {
-                return 0;
-            }
-        });
+//        planService.setProjectCacheService(new CacheService<Project>() {
+//            @Override
+//            public Project get(String key) {
+//                return null;
+//            }
+//
+//            @Override
+//            public void set(String key, Project value) {
+//
+//            }
+//
+//            @Override
+//            public long getLastModified(String key) {
+//                return 0;
+//            }
+//        });
         return planService;
     }
 }

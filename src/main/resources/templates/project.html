@@ -2,254 +2,257 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>MarkdownPlanner</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="/markdown.css" />
-
-    <link rel="stylesheet" href="/jquery-ui/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/bootstrap.min.css" />
-
-    <link rel="stylesheet" href="/jquery-treetable/css/jquery.treetable.css" />
-    <link rel="stylesheet" href="/jquery-treetable/css/jquery.treetable.theme.default.css" />
-
-    <link rel="stylesheet" href="/bootstrap-select/css/bootstrap-select.min.css" />
-
-    <link rel="stylesheet" href="/main.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/plugins/jquery-ui/jquery-ui.min.css"/>
+    <link rel="stylesheet" href="/plugins/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/plugins/jquery-treetable/css/jquery.treetable.css"/>
+    <link rel="stylesheet" href="/plugins/jquery-treetable/css/jquery.treetable.theme.default.css"/>
+    <link rel="stylesheet" href="/plugins/bootstrap-select/css/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="/main.css"/>
+    <link rel="stylesheet" href="/markdown.css"/>
 </head>
 <body>
-    <div class="container">
-        <input type="hidden" id="path" th:attr="value=${path}" />
-        <nav class="navbar" style="margin-bottom:1px">
-            <ol class="breadcrumb" style="float:left;position:relative;top:10px">
-                <li th:each="file : ${breadcrumb.links}">
-                    <a th:if="${file.isDir()}" th:text="${file.name}" th:attr='href=${file.url}'></a>
-                    <span th:unless="${file.isDir()}" th:text="${file.name}"></span>
-                </li>
-            </ol>
-        </nav>
+<div class="container">
+    <input type="hidden" id="path" th:attr="value=${path}"/>
+    <nav class="navbar" style="margin-bottom:1px">
+        <ol class="breadcrumb" style="float:left;position:relative;top:10px">
+            <li th:each="file : ${breadcrumb.links}">
+                <a th:if="${file.isBooeanDir()}" th:text="${file.name}" th:attr='href=${file.url}'></a>
+                <span th:unless="${file.isBooeanDir()}" th:text="${file.name}"></span>
+            </li>
+        </ol>
+    </nav>
 
-        <div class="toolbar" style="margin-bottom: 5px">
-            <form method="GET">
-                <div class="filter-container" style="float:left; margin-right: 5px">
-                    责任人:
-                    <select id="filterByMan" name="man" class="bs-select">
-                        <option value="">所有人</option>
-                        <div th:each="man : ${fullProject.men}">
-                            <div th:if="${man == selectedMan}">
-                                <option selected="selected" th:text="${man}"></option>
-                            </div>
-                            <div th:unless="${man == selectedMan}">
-                                <option th:text="${man}"></option>
-                            </div>
+    <div class="toolbar" style="margin-bottom: 5px">
+        <form method="GET">
+            <div class="filter-container" style="float:left; margin-right: 5px">
+                责任人:
+                <select id="filterByMan" name="man" class="bs-select">
+                    <option value="">所有人</option>
+                    <div th:each="man : ${fullProject.men}">
+                        <div th:if="${man == selectedMan}">
+                            <option selected="selected" th:text="${man}"></option>
                         </div>
-                    </select>
-                </div>
-
-                <div style="float:left; margin-right: 5px">
-                    显示任务类型:
-                    <select id="filterByTaskStatus" name="status" class="bs-select">
-                        <div th:if="${'All' == selectedStatus}">
-                            <option selected="selected" value="All">所有</option>
+                        <div th:unless="${man == selectedMan}">
+                            <option th:text="${man}"></option>
                         </div>
-                        <div th:unless="${'All' == selectedStatus}">
-                            <option value="All">所有</option>
-                        </div>
+                    </div>
+                </select>
+            </div>
 
-
-                        <div th:if="${'NotCompleted' == selectedStatus}">
-                            <option selected="selected" value="NotCompleted">未完成的</option>
-                        </div>
-                        <div th:unless="${'NotCompleted' == selectedStatus}">
-                            <option value="NotCompleted">未完成的</option>
-                        </div>
-
-                        <div th:if="${'Completed' == selectedStatus}">
-                            <option selected="selected" value="Completed">完成的</option>
-                        </div>
-                        <div th:unless="${'Completed' == selectedStatus}">
-                            <option value="Completed">完成的</option>
-                        </div>
-
-                    </select>
-                </div>
-                <div class="filter-container" style="float:left; margin-right: 5px">
-                    关键词过滤:
-                    <input id="filterByKeyword" name="keyword" th:value="${selectedKeyword}" />
-                    不包含指定的关键词: <input type="checkbox" name="reverse" th:checked="${selectedReverse}" />
-                </div>
-                <div>
-                    <input type="submit" class="btn btn-xs btn-primary" value="GO" />
-                </div>
-            </form>
-        </div>
-
-        <div id="tabs" style="margin-top:20px">
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a href="#tasks" aria-controls="tasks" role="tab" data-toggle="tab">任务列表</a>
-                </li>
-                <li role="presentation">
-                    <a href="#summary" aria-controls="profile" role="tab" data-toggle="tab">统计信息</a>
-                </li>
-                <li role="presentation" th:if="${article}">
-                    <a href="#markdown" aria-controls="markdown" role="tab" data-toggle="tab">源文件</a>
-                </li>
-            </ul>
-
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div class="tab-pane active" id="tasks" role="tabpanel" style="margin-top: 5px">
-                    <div th:with="rootTask=${project.rootTask}"
-                         class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="60"
-                         aria-valuemin="0" aria-valuemax="100"
-                         th:attr="style='border: 1px; height:20px; width: ' + ${rootTask?.rawProgress} + '%'">
-                        <span th:text="${rootTask?.rawProgress}"></span>%
+            <div style="float:left; margin-right: 5px">
+                显示任务类型:
+                <select id="filterByTaskStatus" name="status" class="bs-select">
+                    <div th:if="${'All' == selectedStatus}">
+                        <option selected="selected" value="All">所有</option>
+                    </div>
+                    <div th:unless="${'All' == selectedStatus}">
+                        <option value="All">所有</option>
                     </div>
 
-                    <table id="example-advanced">
-                        <caption>
-                            <a href="#" onclick="jQuery('#example-advanced').treetable('expandAll'); return false;">展开全部</a>
-                            <a href="#" onclick="jQuery('#example-advanced').treetable('collapseAll'); return false;">收起全部</a>
-                        </caption>
-                        <thead>
-                        <tr>
-                            <th>任务</th>
-                            <th>人日</th>
-                            <th>负责人</th>
-                            <th>开始时间</th>
-                            <th>结束时间</th>
-                            <th>进度</th>
-                            <th th:if="${editable}">操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="task : ${project.tasks}"
-                                th:attr="data-tt-id=${task.id}, data-tt-parent-id=${task.parentId}, class=${task.bgColorClass}">
-                                <td>
-                                    <span th:if="${task.composite}" th:attr='class=folder' th:text="${task.name}"></span>
-                                    <span th:unless="${task.composite}" th:attr='class=file' th:text="${task.name}"></span>
-                                </td>
-                                <td th:text="${task.manDays}"></td>
-                                <td th:text="${task.owner}"></td>
-                                <td th:text="${task.startDate}"></td>
-                                <td th:text="${task.endDate}"></td>
-                                <td>
-                                    <span th:if="${task.composite}"
+
+                    <div th:if="${'NotCompleted' == selectedStatus}">
+                        <option selected="selected" value="NotCompleted">未完成的</option>
+                    </div>
+                    <div th:unless="${'NotCompleted' == selectedStatus}">
+                        <option value="NotCompleted">未完成的</option>
+                    </div>
+
+                    <div th:if="${'Completed' == selectedStatus}">
+                        <option selected="selected" value="Completed">完成的</option>
+                    </div>
+                    <div th:unless="${'Completed' == selectedStatus}">
+                        <option value="Completed">完成的</option>
+                    </div>
+
+                </select>
+            </div>
+            <div class="filter-container" style="float:left; margin-right: 5px">
+                关键词过滤:
+                <input id="filterByKeyword" name="keyword" th:value="${selectedKeyword}"/>
+                不包含指定的关键词: <input type="checkbox" name="reverse" th:checked="${selectedReverse}"/>
+            </div>
+            <div>
+                <input type="submit" class="btn btn-xs btn-primary" value="GO"/>
+            </div>
+        </form>
+    </div>
+
+    <div id="tabs" style="margin-top:20px">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#tasks" aria-controls="tasks" role="tab" data-toggle="tab">任务列表</a>
+            </li>
+            <li role="presentation">
+                <a href="#summary" aria-controls="profile" role="tab" data-toggle="tab">统计信息</a>
+            </li>
+            <li role="presentation" th:if="${article}">
+                <a href="#markdown" aria-controls="markdown" role="tab" data-toggle="tab">源文件</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="tasks" role="tabpanel" style="margin-top: 5px">
+                <div th:with="rootTask=${project.rootTask}"
+                     class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                     aria-valuenow="60"
+                     aria-valuemin="0" aria-valuemax="100"
+                     th:attr="style='border: 1px; height:20px; width: ' + ${rootTask?.rawProgress} + '%'">
+                    <span th:text="${rootTask?.rawProgress}"></span>%
+                </div>
+
+                <table id="example-advanced">
+                    <caption>
+                        <a href="#" onclick="jQuery('#example-advanced').treetable('expandAll'); return false;">展开全部</a>
+                        <a href="#"
+                           onclick="jQuery('#example-advanced').treetable('collapseAll'); return false;">收起全部</a>
+                    </caption>
+                    <thead>
+                    <tr>
+                        <th>任务</th>
+                        <th>人天</th>
+                        <th>责任人</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
+                        <th>进度</th>
+                        <th th:if="${editable}">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="task : ${project.tasks}"
+                        th:attr="data-tt-id=${task.id}, data-tt-parent-id=${task.parentId}, class=${task.bgColorClass}">
+                        <td>
+                            <span th:if="${task.booleanComposite}" th:attr='class=folder' th:text="${task.name}"></span>
+                            <span th:unless="${task.booleanComposite}" th:attr='class=file'
+                                  th:text="${task.name}"></span>
+                        </td>
+                        <td th:text="${task.manDays}"></td>
+                        <td th:text="${task.owner}"></td>
+                        <td th:text="${task.startDate}"></td>
+                        <td th:text="${task.endDate}"></td>
+                        <td>
+                                    <span th:if="${task.booleanComposite}"
                                           th:text="${task.progress}"
                                     ></span>
-                                    <span th:unless="${task.composite}"
-                                          th:text="${task.progress}"
-                                          th:attr="data-name=${task.name}, data-progress=${task.rawProgress}, data-lineNumber=${task.lineNumber}"
-                                          onclick="updateTaskProgress(this)"></span>
-                                </td>
-                                <td th:if="${editable}">
-                                    <a th:unless="${task.composite}"
-                                       th:attr="data-name=${task.name}, data-progress=${task.rawProgress}, data-lineNumber=${task.lineNumber}"
-                                       onclick="showUpdateTaskProgressModal(this)">
-                                        编辑
-                                    </a>
-                                </td>
+                            <span th:unless="${task.booleanComposite}"
+                                  th:text="${task.progress}"
+                                  th:attr="data-name=${task.name}, data-progress=${task.rawProgress}, data-lineNumber=${task.lineNumber}"
+                                  onclick="updateTaskProgress(this)"></span>
+                        </td>
+                        <td th:if="${editable}">
+                            <a th:unless="${task.booleanComposite}"
+                               th:attr="data-name=${task.name}, data-progress=${task.rawProgress}, data-lineNumber=${task.lineNumber}"
+                               onclick="showUpdateTaskProgressModal(this)">
+                                编辑
+                            </a>
+                        </td>
 
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                <div class="tab-pane" id="markdown" role="tabpanel">
-                    <article class="markdown-body" th:utext="${article}"></article>
-                </div>
+            <div class="tab-pane" id="markdown" role="tabpanel">
+                <article class="markdown-body" th:utext="${article}"></article>
+            </div>
 
-                <!-- summary tab -->
-                <div class="tab-pane" id="summary" role="tabpanel">
-                    <h3>项目<span th:text="${project.projectStartDate}"/>开始，
-                        <span th:text="${project.projectEndDate}"/>结束
-                    </h3>
-                    <table id="summary-table" class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>责任人</th>
-                            <th>总人日</th>
-                            <th>已完成人日</th>
-                            <th width="70%">进度</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="man : ${project.men}"
-                            th:with="stat=${project.getUserStat(man)}">
-                            <td th:text="${man}"></td>
-                            <td th:text="${stat.totalCost / 2}"></td>
-                            <td th:text="${stat.finishedCost / 2}"></td>
-                            <td width="70%">
-                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="60"
-                                     aria-valuemin="0" aria-valuemax="100"
-                                     th:attr="style='height:20px; width: ' + ${stat.progress} + '%'">
-                                    <span th:text="${stat.progress}"></span>%
-                                </div>
-                            </td>
-                        </tr>
+            <!-- summary tab -->
+            <div class="tab-pane" id="summary" role="tabpanel">
+                <h3>项目<span th:text="${project.projectStartDate}"/>开始，
+                    <span th:text="${project.projectEndDate}"/>结束
+                </h3>
+                <table id="summary-table" class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>责任人</th>
+                        <th>总人日</th>
+                        <th>已完成人日</th>
+                        <th width="70%">进度</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="man : ${project.men}"
+                        th:with="stat=${project.getUserStat(man)}">
+                        <td th:text="${man}"></td>
+                        <td th:text="${stat.totalCost / 2}"></td>
+                        <td th:text="${stat.finishedCost / 2}"></td>
+                        <td width="70%">
+                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                                 aria-valuenow="60"
+                                 aria-valuemin="0" aria-valuemax="100"
+                                 th:attr="style='height:20px; width: ' + ${stat.progress} + '%'">
+                                <span th:text="${stat.progress}"></span>%
+                            </div>
+                        </td>
+                    </tr>
 
-                        <!-- 总状态 -->
-                        <tr th:with="stat=${project.getTotalStat()}, rootTask=${project.rootTask}">
-                            <td th:text="${stat.user}"></td>
-                            <td th:text="${stat.totalCost / 2}"></td>
-                            <td th:text="${stat.finishedCost / 2}"></td>
-                            <td>
-                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="60"
-                                     aria-valuemin="0" aria-valuemax="100"
-                                     th:attr="style='height:20px; width: ' + ${rootTask?.rawProgress} + '%'"
-                                >
-                                    <span th:text="${rootTask?.rawProgress}"></span>%
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <!-- 总状态 -->
+                    <tr th:with="stat=${project.getTotalStat()}, rootTask=${project.rootTask}">
+                        <td th:text="${stat.user}"></td>
+                        <td th:text="${stat.totalCost / 2}"></td>
+                        <td th:text="${stat.finishedCost / 2}"></td>
+                        <td>
+                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+                                 aria-valuenow="60"
+                                 aria-valuemin="0" aria-valuemax="100"
+                                 th:attr="style='height:20px; width: ' + ${rootTask?.rawProgress} + '%'"
+                            >
+                                <span th:text="${rootTask?.rawProgress}"></span>%
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-
-    <div class="modal" tabindex="-1" role="dialog" id="updateTaskProgressModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">更新[<span id="taskName" class="dd-task-name"></span>]进度</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="input-group">
+</div>
+<!--modal-->
+<div class="modal" tabindex="-1" role="dialog" id="updateTaskProgressModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">更新[<span id="taskName" class="dd-task-name"></span>]进度</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default btn-number" disabled="disabled" data-type="minus" data-field="quant[1]">
+                            <button type="button" class="btn btn-default btn-number" disabled="disabled"
+                                    data-type="minus" data-field="quant[1]">
                                 <span class="glyphicon glyphicon-minus"></span>
                             </button>
                         </span>
-                        <input type="text" id="newProgress" name="quant[1]" class="form-control input-number" value="1" min="0" max="100" />
-                        <input type="hidden" id="oldProgress"/>
-                        <input type="hidden" id="taskLineNumber"/>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default btn-number" data-type="plus" data-field="quant[1]">
+                    <input type="text" id="newProgress" name="quant[1]" class="form-control input-number" value="1"
+                           min="0" max="100"/>
+                    <input type="hidden" id="oldProgress"/>
+                    <input type="hidden" id="taskLineNumber"/>
+                    <span class="input-group-btn">
+                            <button type="button" class="btn btn-default btn-number" data-type="plus"
+                                    data-field="quant[1]">
                                 <span class="glyphicon glyphicon-plus"></span>
                             </button>
                         </span>
-                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="updateTaskProgress()">保存</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="updateTaskProgress()">保存</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
             </div>
         </div>
     </div>
-    <script src="/jquery-2.2.4.js"></script>
-    <script src="/jquery-ui/jquery-ui.min.js"></script>
-    <script src="/jquery-treetable/jquery.treetable.js"></script>
-    <script src="/bootstrap.min.js"></script>
-    <script src="/bootstrap-select/js/bootstrap-select.js"></script>
-
-    <script src="/Chart.bundle.js" />
-    <script src="/tasks.js"></script>
-    <script src="/stat.js"></script>
+</div>
+<script src="/plugins/jquery-2.2.4.js" type="text/javascript"></script>
+<script src="/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="/plugins/jquery-treetable/jquery.treetable.js" type="text/javascript"></script>
+<script src="/plugins/bootstrap/bootstrap.min.js" type="text/javascript"></script>
+<script src="/plugins/bootstrap-select/js/bootstrap-select.js" type="text/javascript"></script>
+<script src="/plugins/Chart.bundle.js" type="text/javascript"></script>
+<script src="/tasks.js" type="text/javascript"></script>
+<script src="/stat.js" type="text/javascript"></script>
 </body>
 </html>

@@ -1,3 +1,9 @@
+.breadcrumb>li+li:before {
+    color: #CCCCCC;
+    content: "/ ";
+    padding: 0 5px;
+}
+
 .layout-middle {
     height: 50vh;
     margin-top: 15vh;
@@ -28,7 +34,7 @@
 }
 
 table {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 #example-advanced .markdownplanner-bg-warning {

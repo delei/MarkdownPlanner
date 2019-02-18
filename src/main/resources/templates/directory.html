@@ -2,28 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>MarkdownPlanner</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="/jquery-2.2.4.js"></script>
-
-    <script src="/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="/bootstrap.min.css" />
-    <link rel="stylesheet" href="/bootstrap-theme.min.css" />
-
-    <link rel="stylesheet" href="/main.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/plugins/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/main.css"/>
     <style>
-	.markdown-body {
-		box-sizing: border-box;
-		min-width: 200px;
-		max-width: 980px;
-		margin: 0 auto;
-		padding: 45px;
-	}
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
 
-	@media (max-width: 767px) {
-		.markdown-body {
-			padding: 15px;
-		}
-	}
+        @media (max-width: 767px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -32,26 +27,28 @@
     <nav class="navbar" style="margin-bottom:1px">
         <ol class="breadcrumb" style="float:left;position:relative;top:10px">
             <li th:each="file : ${breadcrumb.links}">
-                <a th:if="${file.isDir()}" th:text="${file.name}" th:attr='href=${file.url}'></a>
-                <span th:unless="${file.isDir()}" th:text="${file.name}"></span>
+                <a th:if="${file.isBooeanDir()}" th:text="${file.name}" th:attr='href=${file.url}'></a>
+                <span th:unless="${file.isBooeanDir()}" th:text="${file.name}"></span>
             </li>
         </ol>
     </nav>
     <ul class="list-group">
         <li class="list-group-item" th:each="file : ${files}">
-            <i th:if="${file.isDir()}" class="glyphicon glyphicon-folder-close"></i>
-            <a th:if="${file.isDir()}"
+            <i th:if="${file.isBooeanDir()}" class="glyphicon glyphicon-folder-close"></i>
+            <a th:if="${file.isBooeanDir()}"
                th:text="${file.name}"
                th:attr='href=${file.url},alt=${file.url}'>
             </a>
 
-            <i th:unless="${file.isDir()}" class="glyphicon glyphicon-file"></i>
+            <i th:unless="${file.isBooeanDir()}" class="glyphicon glyphicon-file"></i>
             <a th:text="${file.name}"
-               th:unless="${file.isDir()}"
+               th:unless="${file.isBooeanDir()}"
                th:attr='href=${file.url},alt=${file.url}'>
             </a>
         </li>
     </ul>
 </div>
+<script src="/plugins/jquery-2.2.4.js"></script>
+<script src="/plugins/bootstrap/bootstrap.min.js"></script>
 </body>
 </html>
